@@ -1,19 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="ff-2">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans|Darker+Grotesque|Oswald|Sarabun&display=swap"
+        rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://kit.fontawesome.com/9963762e2c.js" crossorigin="anonymous"></script>
     <script src="./app.js"></script>
-    <title>Document</title>
+    <title>Weather Dashboard</title>
 </head>
+
 <body>
-<header>
-    Today's Weather
-</header>
+    <div class="fs-m bg-g-fb p-m ta-c ts-i">
+        <h1 class="c-g-wdb ff-1"> Weather Dashboard </h1>
+    </div>
+
+    <div class="d-g m-s s">
+        <div class="d-f df-fdc f-n gbx-l m-s p-s">
+            <div class="d-f df-fdr">
+                <input class="bd-n fs-m tp-s ts-i m-s" id="cityInput" type="text" placeholder="Search by city..."/>
+                <button class="fas fa-search bd-n bgc-pri-1 c-pri-2 fs-m p-l" id="citySubmit"></button>
+            </div>
+            
+            <div class="ff-2 fs-l">
+                <div class="ff-1 fs-s m-m p-s ts-i">Previously Searched Locations</div>
+                <!-- dynamically create divs here-->
+            </div>
+        </div>
 
 
+        <div id="weatherWrapper" class="d-f df-fdr gbx-r m-s p-s">
+            <div id="weatherName"></div>
+            <div id="weatherTemp"></div>
+            <div id="weatherHum"></div>
+            <div id="weatherWind"></div>
+            <div id="weatherUV"></div>
+        </div>
+
+        <div id="forecastWrapper"class="gbx-rb m-s p-s ">
+            <div id="forecastTitle"></div>
+            <div class="d-f df-fdr" id="forecast">
+                <!-- dynamically create divs here-->
+            </div>
+        </div>
+
+    </div>
+    <div class="m-s ts-i">Powered by <a class="ff-4 fs-s c-ow ts-n td-n" href="https://openweathermap.org/">
+            OpenWeather<sup>&#174;</sup></a></div>
 
 
     <!-- search input box (event on mag glass) -->
@@ -21,5 +60,5 @@
     <!-- current dorky weather status on the city -->
     <!-- 5 day weather outlook -->
 </body>
-</html>
 
+</html>
