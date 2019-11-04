@@ -182,7 +182,7 @@
 .c-g-wdb {
  
   background: -webkit-linear-gradient(rgb(35, 47, 76), rgb(0, 59,196) 100%);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent; 
 }
 
