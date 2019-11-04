@@ -15,8 +15,6 @@
 /* send city name to a openweather api */
 /* set the weather info to the object returned (see raw data) */
 
-
-
 $(document).ready(function () {
 
     $('#cityInput').keypress(function(e){
@@ -25,12 +23,13 @@ $(document).ready(function () {
         }
     });
 
-    
     // Here we run our AJAX call to the OpenWeatherMap API
     $("#citySubmit").on("click", function() {
         
+
         var forecastTitle = $(`<div class="fs-m ts-i">Your 5-Day Weather Forecast</div>`)
-        $('#forecastTitle').append(forecastTitle);
+        $('#forecastTitle').html(forecastTitle);
+        $('#forecast').html('');
 
 
         // This is our API key
@@ -49,24 +48,31 @@ $(document).ready(function () {
             // Log the resulting object
             console.log(responseW);
 
-            $('#weatherName').append(`<div class="c-g-wdb"><div class="c-pri-2 fs-j p-s ts-n">${responseW.name}</div></div>`);
-            $('#weatherTemp').append(`<div class="ai-b ff-3 ts-i">The current temperature is: <div class="c-pri-2  p-s ts-n">${responseW.main.temp.toFixed()}°</div></div>`);
-            $('#weatherHum').append(`<div class="ai-b ff-3 ts-i">The current humidity is: <div class="c-pri-2 p-s ts-n">${responseW.main.humidity.toFixed()}%</div></div>`);
-            $('#weatherWind').append(`<div class="ai-b ff-3 ts-i">Wind gusts could reach <div class="c-pri-2 p-s ts-n">${responseW.wind.speed.toFixed()+' mph'} </div></div>`);
+            var timeStamp = responseW.dt;
+            var newDate = moment.unix(timeStamp).format('L');
+            var iCode = responseW.weather[0].icon;
+            var iURL = "http://openweathermap.org/img/w/" + iCode + ".png";
+
+            console.log(newDate);
+
+            $('#weatherName').html(`<div class="c-g-wdb fs-j m-s ts-n">${responseW.name}</div>`);
+            $('#weatherDate').html(`<div class="c-g-wdb fs-j m-s ts-n">${newDate}</div>`)
+            $('#weatherTemp').html(`<div class="ff-3 ts-i">The current temperature is:  </div><div class="c-pri-2 fs-m p-s ts-n">${responseW.main.temp.toFixed()+'°'}</div>`);
+            $('#weatherHum').html(`<div class="ff-3 ts-i">The current humidity is:   </div><div class="c-pri-2 fs-m p-s ts-n">${responseW.main.humidity.toFixed()+'%'}</div>`);
+            $('#weatherWind').html(`<div class="ff-3 ts-i">Wind gusts could reach   </div><div class="c-pri-2 fs-m p-s ts-n">${responseW.wind.speed.toFixed()+' mph'} </div>`);
+            $('#weatherIcon').html(`<img class="" src="${iURL}"/>`)
 
             var uvLat = responseW.coord.lat;
             var uvLon = responseW.coord.lon;
             var queryURLu = `http://api.openweathermap.org/data/2.5/uvi?appid=${APIKey}&lat=${uvLat}&lon=${uvLon}`;
-
-
-
+            
             $.ajax({
                 url: queryURLu,
                 method: "GET"
             }).then(function (responseU) {
                 // Log the resulting object
                 console.log(responseU);
-                $('#weatherUV').append(`<div class="ai-b ff-3 ts-i ">The current UV Index is <div class="c-pri-2 p-s ts-n">${responseU.value}</div></div>`);
+                $('#weatherUV').html(`<div class="ff-3 ts-i">The current UV Index is </div><div class="c-pri-2 fs-m p-s ts-n">${responseU.value}</div>`);
 
             });
         });
@@ -77,6 +83,8 @@ $(document).ready(function () {
             }).then(function (response) {
                 console.log(response);
 
+                newDiv.val('');
+
                 var list = response.list;
                 //console.log(list);
 
@@ -84,8 +92,7 @@ $(document).ready(function () {
                     var K = list[i].main.temp;
                     var lK = list[i].main.temp_min;
                     var hK = list[i].main.temp_max;
-                    console.log(lK)
-
+                   
                     var temp = (((K-273.15)*1.8)+32).toFixed();
                     var hum = list[i].main.humidity.toFixed();
                     var low = (((lK-273.15)*1.8)+32).toFixed();
@@ -93,23 +100,22 @@ $(document).ready(function () {
 
                     //console.log(hum);
 
-                    var newDiv = $('<div>');
+                    newDiv = $('<div>');
                    
                     
                     newDiv.html(`<div class="fs-l">${temp}°</div><br />Humidity: ${hum}%<br />Low: ${low}°<br />High: ${high}°`);
                     newDiv.attr("class", "m-s p-m s");
 
                     
-                    $('#forecast').append(newDiv);
+                    $('#cardsWrapper').append(newDiv);
+                    
+
                 }
-                
 
               });
 
-
-
               $("#cityInput").val('');
-              newDiv = '';
+ 
          });
 
 
