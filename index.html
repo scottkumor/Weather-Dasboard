@@ -13,7 +13,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://kit.fontawesome.com/9963762e2c.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./app.js"></script>
     <title>Weather Dashboard</title>
 </head>
@@ -23,41 +22,46 @@
         <h1 class="c-g-wdb ff-1"> Weather Dashboard </h1>
     </div>
 
-    <div id="contentWrapper" class=" m-m s">
-        <div id="searchWrapper" class="d-f df-fdc fz-j  m-s p-s">
+    <div id="contentWrapper" class="d-g m-m s">
+
+        <div id="searchWrapper" class="d-f df-fdc fz-j gbx-a m-s p-s">
             <div class="d-f df-fdr m-s p-s">
                 <input class="bd-n fz-l tp-s fs-i w-f" id="cityInput" type="text" placeholder="Search by city..." />
                 <button class="bd-n bgc-pri-1 c-pri-2 fs-b br fz-l p-s" id="citySubmit">Go!</button>
             </div>
 
-            <div class="ff-2 ">
+            <div class="ff-2">
                 <div class="c-pri-3 ff-1 fz-s m-s fs-i">History</div>
                 <!-- dynamically create buttons here-->
+                <div id="history" class="d-f df-fdc"></div>
             </div>
         </div>
 
-        <div class="d-g" id="weatherWrapper">
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s">
-                <div id="weatherName" class=""></div>
-                <div id="weatherDate" class=""></div>
-                <div class="m-s" id="weatherIcon"></div>
+        <div class="gbx-b" id="weatherWrapper">
+            <div class="d-f df-fdr ai-c jc-fs m-s">
+                <div id="weatherName" class="c-g-wdb fz-jjj m-s "></div>
+                <div class="m-s as-c" id="weatherIcon"></div>
+                <div id="weatherDate" class="c-g-wdb fz-j ac-c ml-a m-s"></div>
             </div>
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s" id="weatherIcon"></div>
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s" id="weatherTemp"></div>
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s" id="weatherHum"></div>
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s" id="weatherWind"></div>
-            <div class="d-f df-fdr df-fs jc-fs ac-c m-s" id="weatherUV"></div>
+            <div class="d-f df-fdr ai-b jc-sa m-s">
+                <div class="d-f df-fdr ai-b jc-sb m-s w-h" id="weatherTemp"></div>
+                <div class="d-f df-fdr ai-b jc-sb m-s w-h" id="weatherHum"></div>
+            </div>
+            <div class="d-f df-fdr ai-b jc-sa m-s">
+                <div class="d-f df-fdr df-nw ai-b jc-sb m-s w-h" id="weatherWind"></div>
+                <div class="d-f df-fdr ai-b jc-sb m-s w-h" id="weatherUV"></div>
+            </div>        
         </div>
 
-        <div id="forecastWrapper" class=" m-s p-s ">
+        <div id="forecastWrapper" class="gbx-c m-s p-s  h-fc">
             <div id="forecastTitle"></div>
-            <div class="" id="cardsWrapper">
+            <div class="d-f df-fdr" id="cardsWrapper">
                 <!-- dynamically create divs here-->
             </div>
         </div>
     </div>
 
-    <div class="m-s ts-i">Powered by <a class="ff-4 fz-s c-ow ts-n td-n" href="https://openweathermap.org/">
+    <div class="m-s fs-i">Powered by <a class="ff-4 fz-m c-ow fs-n td-n" href="https://openweathermap.org/">
             OpenWeather<sup>&#174;</sup></a></div>
 
 
