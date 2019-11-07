@@ -20,8 +20,24 @@
 
 
 $(document).ready(function () {
+    let storedHistory = JSON.parse(localStorage.getItem("storage")) || {};
+    for (i = 0; i < storedHistory.length; i++) {
+        if (Object.keys(storedHistory).length) {
+            $('#history').append(`<button class="bg-g-fbh bd-n c-pri-2 fz-l p-s ta-l ti-s m-s">${storedHistory[i].value}</button>`);
+        }
+    };
 
-    
+    var searches = [];
+
+    function searchStore() {
+        let userInput = $('#cityInput');
+        searches[searches.length] = {
+            value: userInput.val()
+        };
+        localStorage.setItem("storage", JSON.stringify(searches));
+        $('#history').append(`<button class="bg-g-fbh bd-n c-pri-2 fz-l p-s ta-l ti-s m-s">${userInput.val()}</button>`);
+        $("#cityInput").val('');
+    };
 
 
 
@@ -33,6 +49,25 @@ $(document).ready(function () {
 
     // Here we run our AJAX call to the OpenWeatherMap API
     $("#citySubmit").on("click", function () {
+        callAPI();
+        searchStore();
+    });
+
+    $(".bg-g-fbh").on("click", function () {
+        let pass = $(this).text();
+        $('#cityInput').val(pass);
+        callAPI();
+        $("#cityInput").val('');
+    });
+
+    $("#clear").on("click", function () {
+        localStorage.clear();
+        $('#history').empty();
+    });
+
+
+
+    function callAPI() {
 
 
 
@@ -135,12 +170,5 @@ $(document).ready(function () {
 
         });
 
-
-    });
-
+    }
 });
-
-
-
-/* init */
-/* check local storage for history of cities and render */

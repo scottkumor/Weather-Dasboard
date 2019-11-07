@@ -57,7 +57,7 @@ html {line-height: 1.5;}
 .jc-se {justify-content:space-evenly;}
 .jc-sb {justify-content:space-between;}
 .jc-se {justify-content:initial;}
-.jc-sb {justify-content:inherit;}
+.jc-ih {justify-content:inherit;}
 .jc-r {justify-content:left;}
 .jc-l {justify-content:right;}
 .jc-fb {justify-content:first baseline;}
@@ -134,7 +134,7 @@ html {line-height: 1.5;}
 .mxw-i {max-width: inherit;}
 .mxw-40 {max-width: 40%;}
 
-.of-s {overflow: auto;}
+.of-s {overflow: scroll;}
 
 .p-l {padding: 5%;}
 .p-m {padding: 2%;}

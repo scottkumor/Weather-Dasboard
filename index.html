@@ -30,10 +30,14 @@
                 <button class="bd-n bgc-pri-1 c-pri-2 fs-b br fz-l p-s" id="citySubmit">Go!</button>
             </div>
 
-            <div class="ff-2">
-                <div class="c-pri-3 ff-1 fz-s m-s fs-i">History</div>
-                <!-- dynamically create buttons here-->
-                <div id="history" class="d-f df-fdc"></div>
+            <div id="historyWrapper" class="ff-3">
+                <div class="d-f df-fdr jc-fs">
+                    <button id="clear" class="bd-n bgc-pri-1 br c-pri-2 fz-s m-s p-s">Clear</button>
+                    <div class="c-pri-3 fz-s m-s">History</div>
+                </div>
+            <!-- dynamically create buttons here-->
+                <div id="history" class="d-f df-fdc of-s">
+                </div>
             </div>
         </div>
 
@@ -55,20 +59,13 @@
 
         <div id="forecastWrapper" class="gbx-c m-s p-s  h-fc">
             <div id="forecastTitle"></div>
-            <div class="d-f df-fdr" id="cardsWrapper">
-                <!-- dynamically create divs here-->
-            </div>
+            <div class="d-f df-fdr" id="cardsWrapper"></div>
         </div>
     </div>
 
     <div class="m-s fs-i">Powered by <a class="ff-4 fz-m c-ow fs-n td-n" href="https://openweathermap.org/">
             OpenWeather<sup>&#174;</sup></a></div>
 
-
-    <!-- search input box (event on mag glass) -->
-    <!-- list of previous searches (event on history click) -->
-    <!-- current dorky weather status on the city -->
-    <!-- 5 day weather outlook -->
 </body>
 
 </html>
