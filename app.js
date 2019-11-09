@@ -1,7 +1,7 @@
 /* db */
 /* raw weather object from api */
 
-/* variables */
+/* letiables */
 /* parsed weather object */
 
 /* utility functions */
@@ -15,10 +15,6 @@
 /* send city name to a openweather api */
 /* set the weather info to the object returned (see raw data) */
 
-
-
-
-
 $(document).ready(function () {
     let storedHistory = JSON.parse(localStorage.getItem("storage")) || {};
     for (i = 0; i < storedHistory.length; i++) {
@@ -27,7 +23,7 @@ $(document).ready(function () {
         }
     };
 
-    var searches = [];
+    let searches = [];
 
     function searchStore() {
         let userInput = $('#cityInput');
@@ -35,11 +31,9 @@ $(document).ready(function () {
             value: userInput.val()
         };
         localStorage.setItem("storage", JSON.stringify(searches));
-        $('#history').append(`<button class="bg-g-fbh bd-n c-pri-2 fz-l p-s ta-l ti-s m-s">${userInput.val()}</button>`);
+        $('#history').append(`<button class="bg-g-fbh bd-n ol-n c-pri-2 fz-l p-s ta-l ti-s m-s">${userInput.val()}</button>`);
         $("#cityInput").val('');
     };
-
-
 
     $('#cityInput').keypress(function (e) {
         if (e.which == 13) {//Enter key pressed
@@ -51,9 +45,9 @@ $(document).ready(function () {
     $("#citySubmit").on("click", function () {
         callAPI();
         searchStore();
-    });
+        });
 
-    $(".bg-g-fbh").on("click", function () {
+    $(document).on("click", ".bg-g-fbh", function () {
         let pass = $(this).text();
         $('#cityInput').val(pass);
         callAPI();
@@ -65,24 +59,23 @@ $(document).ready(function () {
         $('#history').empty();
     });
 
-
+    function changeFavicon(src) {
+        $('link[rel="icon"]').attr('href', src);
+    }
 
     function callAPI() {
 
-
-
-        var forecastTitle = $(`<div class="fz-jj c-pri-3 fs-i">Your 5-Day Weather Forecast</div>`)
+        let forecastTitle = $(`<div class="fz-jj c-pri-3 fs-i">Your 5-Day Weather Forecast</div>`)
         $('#forecastTitle').html(forecastTitle);
         $('#forecast').html('');
+        
 
+        // This is my API key
+        let APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
+        let cityInput = $('#cityInput').val().trim();
 
-        // This is our API key
-        var APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
-        var cityInput = $('#cityInput').val().trim();
-
-        // Here we are building the URL we need to query the database
-        var queryURLw = "https://api.openweathermap.org/data/2.5/weather?q=" + cityInput + "&units=imperial&appid=" + APIKey;
-        var queryURLf = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityInput + "&appid=" + APIKey;
+        // Here we are building the URLs we need to query the database
+        let queryURLw = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${APIKey}`;
 
         //performing an ajax request
         $.ajax({
@@ -92,10 +85,11 @@ $(document).ready(function () {
             // Log the resulting object
             //console.log(responseW);
 
-            var timeStamp = responseW.dt;
-            var newDate = moment.unix(timeStamp).format('L');
-            var iCode = responseW.weather[0].icon;
-            var iURL = "http://openweathermap.org/img/w/" + iCode + ".png";
+            let timeStamp = responseW.dt;
+            let newDate = moment.unix(timeStamp).format('L');
+            let iCode = responseW.weather[0].icon;
+            let iURL = "http://openweathermap.org/img/wn/" + iCode + "@2x.png";
+            changeFavicon(`${iURL}`);
 
             //console.log(newDate);
 
@@ -104,11 +98,11 @@ $(document).ready(function () {
             $('#weatherTemp').html(`<div class="ff-3 fs-i">The current temperature is</div><div class="c-pri-2 fz-jjj p-s ts-n">${responseW.main.temp.toFixed() + '°'}</div>`);
             $('#weatherHum').html(`<div class="ff-3 fs-i">The current humidity is</div><div class="c-pri-2 fz-jjj p-s ts-n">${responseW.main.humidity.toFixed() + '%'}</div>`);
             $('#weatherWind').html(`<div class="ff-3 fs-i">Wind gusts could reach</div><div class="c-pri-2 fz-jj p-s ts-n">${responseW.wind.speed.toFixed() + ' mph'} </div>`);
-            $('#weatherIcon').html(`<img class="iz-i" src="${iURL}"/>`)
+            $('#weatherIcon').html(`<img class="iz-i bgc-pri-5 s" src="${iURL}"/>`)
 
-            var uvLat = responseW.coord.lat;
-            var uvLon = responseW.coord.lon;
-            var queryURLu = `http://api.openweathermap.org/data/2.5/uvi?appid=${APIKey}&lat=${uvLat}&lon=${uvLon}`;
+            let uvLat = responseW.coord.lat;
+            let uvLon = responseW.coord.lon;
+            let queryURLu = `http://api.openweathermap.org/data/2.5/uvi?appid=${APIKey}&lat=${uvLat}&lon=${uvLon}`;
 
             $.ajax({
                 url: queryURLu,
@@ -121,54 +115,65 @@ $(document).ready(function () {
             });
         });
 
+
+        let queryURLf = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityInput + "&appid=" + APIKey;
+
         $.ajax({
             url: queryURLf,
             method: "GET"
         }).then(function (response) {
-            //console.log(response);
 
             $('#cardsWrapper').empty();
 
-
             newDiv = '';
 
-            var list = response.list;
+            let list = response.list;
 
+            list.forEach((num, index) => {
+                //console.log(index);
+                if (index%8 === 0) {
+                  /* create card  and append to html */
+                  let K = list[index].main.temp;
+                  let lK = list[index].main.temp_min;
+                  let hK = list[index].main.temp_max;
+                  let dt = list[index].dt
+                  let date = moment.unix(dt).format('L');
+                                  console.log(date);
 
+                 
+                  let iconGet = list[index].weather[0].icon;
+                  //let subIconGet = iconGet[index].icon;
+                  //console.log(iconGet);
+  
+                  let icon = "http://openweathermap.org/img/wn/" + iconGet + "@2x.png";
+                  // console.log(icon);
+                  //<img src="${icon}"> <-- append inside newdiv.html
+  
+                  let temp = (((K - 273.15) * 1.8) + 32).toFixed();
+                  let hum = list[index].main.humidity.toFixed();
+                  let low = (((lK - 273.15) * 1.8) + 32).toFixed();
+                  let high = (((hK - 273.15) * 1.8) + 32).toFixed();
+  
+                  
+  
+                  newDiv = $('<div>');
+  
+                  newDiv.html(`<div class="c-g-wdb fz-j">${date}</div><div class="fz-jj">${temp}°</div><img src="${icon}"><br />Humidity: ${hum}%<br />Low: ${low}°<br />High: ${high}°`);
+                  newDiv.attr("class", "bgc-pri-5 d-f df-fdc jc-c ai-c m-s p-m s");
+  
+                  $('#cardsWrapper').append(newDiv);
+                }
 
+                else {
+                    // go through heach item
+                    //grab temp, humidity, low, high, and icon
+                    //average the temps, lowest low, highest high
+                }
+              });
+                
+               
 
-            for (i = 0; i < list.length; i += 8) {
-                //create a day object every 8 times it loops, loop through that array to generate cards
-
-
-
-                var K = list[i].main.temp;
-                var lK = list[i].main.temp_min;
-                var hK = list[i].main.temp_max;
-                var dt = list[i].dt
-                var date = moment.unix(dt).format('L');
-                //console.log(date);
-
-                var temp = (((K - 273.15) * 1.8) + 32).toFixed();
-                var hum = list[i].main.humidity.toFixed();
-                var low = (((lK - 273.15) * 1.8) + 32).toFixed();
-                var high = (((hK - 273.15) * 1.8) + 32).toFixed();
-
-                //console.log(hum);
-
-                newDiv = $('<div>');
-
-
-                newDiv.html(`<div class="c-g-wdb fz-l">${date}</div><div class="fz-jj">${temp}°</div><br />Humidity: ${hum}%<br />Low: ${low}°<br />High: ${high}°`);
-                newDiv.attr("class", "m-s p-m s");
-
-
-                $('#cardsWrapper').append(newDiv);
-
-
-            }
-
+            
         });
-
     }
 });

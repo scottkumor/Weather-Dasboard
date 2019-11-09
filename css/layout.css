@@ -1,3 +1,5 @@
+@media only screen and (min-width: 1200px) {
+
 html {line-height: 1.5;}
 
 
@@ -125,6 +127,7 @@ html {line-height: 1.5;}
 
 .mxh-a {max-height: auto;}
 .mxh-f {max-height: 100%;}
+.mxh-90 {max-height: 90%;}
 .mxh-fv {max-height: 100vh;}
 .mxh-i {max-height: inherit;}
 
@@ -133,8 +136,6 @@ html {line-height: 1.5;}
 .mxw-fv {max-width: 100vw;}
 .mxw-i {max-width: inherit;}
 .mxw-40 {max-width: 40%;}
-
-.of-s {overflow: scroll;}
 
 .p-l {padding: 5%;}
 .p-m {padding: 2%;}
@@ -171,10 +172,12 @@ html {line-height: 1.5;}
   grid-template-rows: 1fr 1fr;
   grid-template-areas: 
             "a b"
-            "a c";
+            "c c";
 }
 
-.gbx-a {grid-area: a;}
+.gbx-a {grid-area: a;
+overflow-y:auto;
+height: 500px;}
 .gbx-b {grid-area: b;}
 .gbx-c {  grid-area: c;}
 
@@ -188,3 +191,5 @@ html {line-height: 1.5;}
 .f-n {flex: none;}
 .fl-l {float: left;}
 .bs-i {box-sizing: inherit;}
+
+}

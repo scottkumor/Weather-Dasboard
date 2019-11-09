@@ -12,8 +12,8 @@
         rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://kit.fontawesome.com/9963762e2c.js" crossorigin="anonymous"></script>
     <script src="./app.js"></script>
+    <link rel="icon" type="image/png" href="http://openweathermap.org/img/wn/01d@2x.png">
     <title>Weather Dashboard</title>
 </head>
 
@@ -22,21 +22,21 @@
         <h1 class="c-g-wdb ff-1"> Weather Dashboard </h1>
     </div>
 
-    <div id="contentWrapper" class="d-g m-m s">
+    <div id="contentWrapper" class="d-g m-m">
 
         <div id="searchWrapper" class="d-f df-fdc fz-j gbx-a m-s p-s">
             <div class="d-f df-fdr m-s p-s">
-                <input class="bd-n fz-l tp-s fs-i w-f" id="cityInput" type="text" placeholder="Search by city..." />
-                <button class="bd-n bgc-pri-1 c-pri-2 fs-b br fz-l p-s" id="citySubmit">Go!</button>
+                <input class="bd-n fz-l tp-s fs-i ol-n w-f" id="cityInput" type="text" placeholder="Search by city..." />
+                <button class="bd-n bgc-pri-1 c-pri-2 fs-b ol-n br fz-l p-s" id="citySubmit">Go!</button>
             </div>
 
             <div id="historyWrapper" class="ff-3">
                 <div class="d-f df-fdr jc-fs">
-                    <button id="clear" class="bd-n bgc-pri-1 br c-pri-2 fz-s m-s p-s">Clear</button>
+                    <button id="clear" class="bd-n bgc-pri-1 br ol-n c-pri-2 fz-s m-s p-s">Clear</button>
                     <div class="c-pri-3 fz-s m-s">History</div>
                 </div>
             <!-- dynamically create buttons here-->
-                <div id="history" class="d-f df-fdc of-s">
+                <div id="history" class="d-f df-fdc">
                 </div>
             </div>
         </div>
@@ -57,13 +57,13 @@
             </div>        
         </div>
 
-        <div id="forecastWrapper" class="gbx-c m-s p-s  h-fc">
+        <div id="forecastWrapper" class="gbx-c m-s p-s h-fc">
             <div id="forecastTitle"></div>
-            <div class="d-f df-fdr" id="cardsWrapper"></div>
+            <div class="d-f df-fdr jc-sb ai-c" id="cardsWrapper"></div>
         </div>
     </div>
 
-    <div class="m-s fs-i">Powered by <a class="ff-4 fz-m c-ow fs-n td-n" href="https://openweathermap.org/">
+    <div class="m-s fs-i">Powered by <a class="ff-4 fz-m c-ow fs-n ol-n td-n" href="https://openweathermap.org/">
             OpenWeather<sup>&#174;</sup></a></div>
 
 </body>

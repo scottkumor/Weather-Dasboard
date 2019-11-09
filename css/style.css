@@ -2,13 +2,12 @@
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   
-  .bd-n {border: none;}
+  .bd-n {border:none;}
   .bd-s-l {border:solid 10%;}
   .bd-s-m {border:solid 4%;}
   .bd-s-s {border:solid 1%;}
   .br {border-radius:10%;}
 
- 
   .ff-1 {font-family: 'Sarabun', sans-serif;}
   .ff-2 {font-family: 'Darker Grotesque', sans-serif;}
   .ff-3 {font-family: 'DM Sans', sans-serif;}
@@ -31,6 +30,8 @@
   .o-m {opacity: 0.5;}
   .o-l {opacity: 0.25;}
 
+  .ol-n{outline:none;}
+  
   .s {
     box-shadow: 5px 5px 10px rgba(107,152,255,.3);
     -webkit-box-shadow: 5px 5px 14px rgba(107,152,255,.3);
@@ -39,7 +40,6 @@
 
   .td-n {text-decoration: none;}
   .ti-s {text-indent: 2%;}
-
 
   /* ------------------ON FOCUS ------------------ */
   
@@ -97,7 +97,7 @@
 .bgc-pri-2 { background-color: rgba(0,27,90,1) }
 .bgc-pri-3 { background-color: rgba(107,152,255,1) }
 .bgc-pri-4 { background-color: rgba(0,59,196,1) }
-
+.bgc-pri-5 { background-color: rgb(173, 208, 255) }
 
 /* gradients: fading white, white to dark blue, white to light blue */
 .bg-g-fb {background: linear-gradient(rgba(107,152,255,1),rgba(255, 255, 255, 1) 100%);}
