@@ -17,6 +17,11 @@
 <body>
     <div id="jumbotron" class="">
         <div class="jumboLabel">Weather Dashboard</div>
+        <div id="linkWrap">
+            Powered by
+            <a class="" href="https://openweathermap.org/">
+                OpenWeather<sup>&#174;</sup></a>
+        </div>
     </div>
 
     <div id="searchWrapper">
@@ -270,15 +275,13 @@
         <button id="citySubmit">Go!</button>    
     </div>
 
-    <div id="contentWrapper" class="">
-        <div id="historyWrapper" class="">
-            <div class="">
-                <button id="clear" class="">Clear</button>
-                <div class="">History</div>
-            </div>
-            <!-- dynamically create buttons here-->
-            <div id="history" class=""></div>
+    <div id="historyWrapper" class="">
+        <div class="">
+            <button id="clear" class="">Clear</button>
+            <div class="">History</div>
         </div>
+        <!-- dynamically create buttons here-->
+        <div id="history" class=""></div>
     </div>
 
     <div class="" id="weatherWrapper">
@@ -297,14 +300,12 @@
         </div>
     </div>
 
-    <div id="forecastWrapper"></div>
-
-
-    <div class="">
-        Powered by
-        <a class="" href="https://openweathermap.org/">
-            OpenWeather<sup>&#174;</sup></a>
+    <div id="forecastWrapper">
+        <!--forecast divs show up here-->
     </div>
+
+
+    
 </body>
 
 </html>

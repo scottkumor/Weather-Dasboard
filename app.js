@@ -141,7 +141,7 @@ function callAPI() {
         url: forecastURL,
         method: "GET",
     }).then(function (forecastRes) {
-        $("#cardsWrapper").empty();
+        $("#forecastWrapper").empty();
 
         newDiv = "";
 
@@ -171,11 +171,18 @@ function callAPI() {
                 newDiv = $("<div>");
 
                 newDiv.html(
-                    `<div class="">${date}</div><div class="">${temp}°</div><img src="${icon}"><br />Humidity: ${hum}%<br />Low: ${low}°<br />High: ${high}°`
+                    `
+                        <div class="">${date}</div>
+                        <div class="">${temp}°</div>
+                        <img src="${icon}">
+                        <div>Humidity: ${hum}%</div>
+                        <div>Low: ${low}°</div>
+                        <div>High: ${high}°</div>
+                    `
                 );
-                newDiv.attr("class", "");
+                newDiv.attr("class", "foreCard");
 
-                $("#cardsWrapper").append(newDiv);
+                $("#forecastWrapper").append(newDiv);
             } else {
             // go through heach item
             //grab temp, humidity, low, high, and icon

@@ -11,7 +11,7 @@ background-attachment: fixed;
 background-size: cover;
     /* background by SVGBackgrounds.com */
 }
-#jumbotron {
+.jumboLabel {
     font-family: 'Sarabun', sans-serif;
     font-style: italic;
     font-weight: bolder;
@@ -23,7 +23,26 @@ background-size: cover;
     padding: 5vh;
 }
 
+#linkWrap {
+    
+}
+
+
+
+
+
 #searchWrapper {
     display: flex;
     flex-direction: column;
+}
+
+#forecastWrapper{
+    display: flex;
+}
+
+.foreCard {
+    display:flex;
+    flex-direction: column;
+    margin: 1vw;
+    padding: 2vh; 
 }
