@@ -55,11 +55,20 @@ $(document).ready(function () {
 function searchStore() {
     let searches = [];
     let userInput = $("#cityInput");
+
     searches[searches.length] = {
         value: userInput.val(),
     };
+    
     localStorage.setItem("storage", JSON.stringify(searches));
-    $("#history").append(`<button class="historyBtn">${userInput.val()}</button>`);
+    $("#history").append(
+        `
+        <div class="r-flex hisBtnWrap">
+            <button class="hisBtn">${userInput.val()}</button>
+            <i class="fa fa-times clear"></i>
+        </div>
+        `
+    );
     $("#cityInput").val("");
 }
 
@@ -98,16 +107,25 @@ function callAPI() {
 
         //console.log(newDate);
 
-        $("#weatherName").html(`<div>${weatherRes.name}</div>`);
-        $("#weatherDate").html(`<div>${newDate}</div>`);
+        $("#weatherName").text(`${weatherRes.name}`);
+        $("#weatherDate").text(`${newDate}`);
         $("#weatherTemp").html(
-            `<div class="">The current temperature is</div><div class="">${weatherRes.main.temp.toFixed() + "°"}</div>`
+            `
+                <div class="tempText">The current temperature is</div>
+                <div class="tempNum">${weatherRes.main.temp.toFixed() + "°"}</div>
+            `
         );
         $("#weatherHum").html(
-            `<div class="">The current humidity is</div><div class="">${weatherRes.main.humidity.toFixed() + "%"}</div>`
+            `
+                <div class="humText">The current humidity is</div>
+                <div class="humNum">${weatherRes.main.humidity.toFixed() + "%"}</div>
+            `
         );
         $("#weatherWind").html(
-            `<div class="">Wind gusts could reach</div><div class="">${weatherRes.wind.speed.toFixed() + " mph"} </div>`
+            `
+                <div class="">Wind gusts could reach</div>
+                <div class="">${weatherRes.wind.speed.toFixed() + " mph"} </div>
+            `
         );
         $("#weatherIcon").html(`<img class="" src="${iURL}"/>`);
 
@@ -124,7 +142,11 @@ function callAPI() {
             // Log the resulting object
             //console.log(uvRes);
             $("#weatherUV").html(
-                `<div class="">The current<a class="" href"https://www.aimatmelanoma.org/prevention/uv-index/"> UV Index</a> is</div><div class="c-pri-2 fz-jj p-s ts-n">${uvRes.value}</div>`
+                `
+                    <div class="r-flex">The current
+                        <a class="" href"https://www.aimatmelanoma.org/prevention/uv-index/"> UV Index</a> is
+                    </div>
+                    <div class="">${uvRes.value}</div>`
             );
         });
     });
@@ -180,7 +202,7 @@ function callAPI() {
                         <div>High: ${high}°</div>
                     `
                 );
-                newDiv.attr("class", "foreCard");
+                newDiv.attr("class", "foreCard c-flex");
 
                 $("#forecastWrapper").append(newDiv);
             } else {
