@@ -21,7 +21,12 @@ $(document).ready(function () {
     for (i = 0; i < storedHistory.length; i++) {
         if (Object.keys(storedHistory).length) {
             $("#history").append(
-                `<button class="historyBtn">${storedHistory[i].value}</button>`
+                `
+                    <div class="r-flex hisBtnWrap">
+                        <button class="hisBtn">${storedHistory[i].value}</button>
+                        <i class="fa fa-times clear"></i>
+                    </div>
+                `
             );
         }
     }
@@ -44,11 +49,24 @@ $(document).ready(function () {
         $("#history").empty();
     });
     
-    $(document).on("click", ".historyBtn", function () {
+    $(".hisBtn").on("click", function () {
         let pass = $(this).text();
         $("#cityInput").val(pass);
         callAPI();
         $("#cityInput").val("");
+    });
+
+    $('#countries').change(function(){ 
+        var opt = $(this).find('option:selected').val();
+        console.log(opt);
+
+        if(opt === 'us'){
+            $("#states").prop("disabled", false)
+        }
+        else {
+            $("#states").prop("disabled", true)
+        }
+        
     });
 });
 
@@ -61,6 +79,7 @@ function searchStore() {
     };
     
     localStorage.setItem("storage", JSON.stringify(searches));
+    
     $("#history").append(
         `
         <div class="r-flex hisBtnWrap">
@@ -78,20 +97,30 @@ function changeFavicon(src) {
 
 function callAPI() {
     
-    //create space for forecasting
-    let forecastTitle = $(`<div>Your 5-Day Weather Forecast</div>`);
-    let cardsWrapper = $(`<div id="cardsWrapper"></div>`);
-
-    $("#forecastWrapper").append(forecastTitle, cardsWrapper);
-
     // This is my API key
     let APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
     let cityInput = $("#cityInput").val().trim();
+    let countryInput = $("#countries").val();
+    let stateInput = $("#states").val();
+    let weatherURL = "";
 
-    // URL needed to query the database
-    let weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${APIKey}`;
+    // URLs needed to query the database
+    let global = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${APIKey}`;
+    let country = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${countryInput}&appid=${APIKey}`;
+    let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},us&appid=${APIKey}`;
 
-    // api request for today's weather
+    if (stateInput !== "") {
+        weatherURL = usStates;
+    }
+    if (countryInput !== "") {
+        weatherURL = country;
+    }
+    else {
+        weatherURL = global;
+    }
+    
+
+
     $.ajax({
         url: weatherURL,
         method: "GET",
@@ -146,18 +175,15 @@ function callAPI() {
                     <div class="r-flex">The current
                         <a class="" href"https://www.aimatmelanoma.org/prevention/uv-index/"> UV Index</a> is
                     </div>
-                    <div class="">${uvRes.value}</div>`
+                    <div class="">${uvRes.value}</div>
+                `
             );
         });
     });
 
 // synchronous request for forecast data
 
-    let forecastURL =
-        "http://api.openweathermap.org/data/2.5/forecast?q=" +
-        cityInput +
-        "&appid=" +
-        APIKey;
+    let forecastURL =`http://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${APIKey}`;
 
     $.ajax({
         url: forecastURL,
