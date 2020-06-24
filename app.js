@@ -15,20 +15,27 @@
 /* send city name to a openweather api */
 /* set the weather info to the object returned (see raw data) */
 
+let storedHistory = JSON.parse(localStorage.getItem("storage")) || {};
+
 $(document).ready(function () {
-    let storedHistory = JSON.parse(localStorage.getItem("storage")) || {};
     
-    for (i = 0; i < storedHistory.length; i++) {
-        if (Object.keys(storedHistory).length) {
-            $("#history").append(
-                `
-                    <div class="r-flex hisBtnWrap">
-                        <button class="hisBtn">${storedHistory[i].value}</button>
-                        <i class="fa fa-times clear"></i>
-                    </div>
-                `
-            );
-        }
+    var archive = {}, // Notice change here
+        keys = Object.keys(localStorage),
+        i = keys.length;
+
+    while ( i-- ) {
+        
+        archive[ keys[i] ] = JSON.parse(localStorage.getItem( keys[i] ));
+        // console.log(archive[keys[i]])
+        
+        $("#history").append(
+            `
+                <div class="r-flex hisBtnWrap">
+                    <button class="hisBtn">${archive[keys[i]].cityInput}</button>
+                    <i class="fa fa-times clear"></i>
+                </div>
+            `
+        );
     }
     
     $("#cityInput").keypress(function (e) {
@@ -41,24 +48,35 @@ $(document).ready(function () {
     // Here we run our AJAX call to the OpenWeatherMap API
     $("#citySubmit").on("click", function () {
         callAPI();
-        searchStore();
+        $('#countries').prop('selectedIndex', 0);
+        $('#states').prop('selectedIndex', 0);
     });
 
-    $("#clear").on("click", function () {
+    $("#wipe").on("click", function () {
         localStorage.clear();
         $("#history").empty();
     });
     
     $(".hisBtn").on("click", function () {
-        let pass = $(this).text();
-        $("#cityInput").val(pass);
+        let text = $(this).text();
+        let city = JSON.parse(localStorage.getItem(text)).cityInput;
+        let country = JSON.parse(localStorage.getItem(text)).countryInput || "";
+        let state = JSON.parse(localStorage.getItem(text)).stateInput || "";
+
+        console.log(city, country, state)
+
+        $("#cityInput").val(city);
+        $("#countryInput").val(country);
+        $("#stateInput").val(state);
+
         callAPI();
+
+        //localStorage.removeItem(text);
         $("#cityInput").val("");
     });
 
     $('#countries').change(function(){ 
         var opt = $(this).find('option:selected').val();
-        console.log(opt);
 
         if(opt === 'us'){
             $("#states").prop("disabled", false)
@@ -70,53 +88,86 @@ $(document).ready(function () {
     });
 });
 
-function searchStore() {
-    let searches = [];
-    let userInput = $("#cityInput");
-
-    searches[searches.length] = {
-        value: userInput.val(),
-    };
-    
-    localStorage.setItem("storage", JSON.stringify(searches));
-    
-    $("#history").append(
-        `
-        <div class="r-flex hisBtnWrap">
-            <button class="hisBtn">${userInput.val()}</button>
-            <i class="fa fa-times clear"></i>
-        </div>
-        `
-    );
-    $("#cityInput").val("");
-}
 
 function changeFavicon(src) {
     $('link[rel="icon"]').attr("href", src);
 }
 
 function callAPI() {
+
+    $("#greeting").attr("style", "display:none;");
     
     // This is my API key
     let APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
     let cityInput = $("#cityInput").val().trim();
     let countryInput = $("#countries").val();
     let stateInput = $("#states").val();
+    var units = $("input[name='unitRdo']:checked").val();
     let weatherURL = "";
 
     // URLs needed to query the database
-    let global = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${APIKey}`;
-    let country = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${countryInput}&appid=${APIKey}`;
-    let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},us&appid=${APIKey}`;
+    let global = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=${units}&appid=${APIKey}`;
+    let country = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${countryInput}&units=${units}&appid=${APIKey}`;
+    let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},us&units=${units}&appid=${APIKey}`;
 
     if (stateInput !== "") {
         weatherURL = usStates;
+
+        let key = cityInput;
+        let value = {cityInput, countryInput, stateInput}
+
+        localStorage.setItem(key, JSON.stringify(value));
+        
+        $("#history").append(
+            `
+            <div class="r-flex hisBtnWrap">
+                <button class="hisBtn">${cityInput}, ${stateInput} (USA)</button>
+                <i class="fa fa-times clear"></i>
+            </div>
+            `
+        );
+
+        $("#cityInput").val("");
     }
-    if (countryInput !== "") {
+    if (countryInput !== ""  && countryInput !== "us") {
         weatherURL = country;
+
+        let key = cityInput;
+        let value = {cityInput, countryInput}
+
+        localStorage.setItem(key, JSON.stringify(value));
+        
+        $("#history").append(
+            `
+            <div class="r-flex hisBtnWrap">
+                <button class="hisBtn">${cityInput}, ${countryInput}</button>
+                <i class="fa fa-times clear"></i>
+            </div>
+            `
+        );
+        
+        $("#cityInput").val("");
+
     }
-    else {
+    else if (countryInput !== "us"){
         weatherURL = global;
+
+        let key = cityInput
+        let value = {cityInput, countryInput};
+        
+        localStorage.setItem(key, JSON.stringify(value));
+        
+        $("#history").append(
+            `
+            <div class="r-flex hisBtnWrap">
+                <button class="hisBtn">${cityInput}</button>
+                <i class="fa fa-times clear"></i>
+            </div>
+            `
+        );
+        
+        $("#cityInput").val("");
+
     }
     
 
@@ -183,7 +234,21 @@ function callAPI() {
 
 // synchronous request for forecast data
 
-    let forecastURL =`http://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${APIKey}`;
+    let forecastURL ="";
+    
+    let globalF = `http://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&units=${units}&appid=${APIKey}`;
+    let countryF = `http://api.openweathermap.org/data/2.5/forecast?q=${cityInput},${countryInput}&units=${units}&appid=${APIKey}`
+    let usStatesF = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput},${stateInput},us&units=${units}&appid=${APIKey}`;
+
+    if (stateInput !== "") {
+        forecastURL = usStatesF;
+    }
+    if (countryInput !== "") {
+        forecastURL = countryF;
+    }
+    else {
+        forecastURL = globalF;
+    }
 
     $.ajax({
         url: forecastURL,
