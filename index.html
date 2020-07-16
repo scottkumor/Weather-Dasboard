@@ -20,7 +20,9 @@
         <div id="linkWrap">
             Powered by
             <a id="openLink" href="https://openweathermap.org/">
-                OpenWeather<sup>&#174;</sup></a>
+                OpenWeather
+                <sup>&#174;</sup>
+            </a>
         </div>
     </div>
 
@@ -375,24 +377,23 @@
                     paramaters to narrow it down.
                 </p>
             </div>
-            <div class="">
-                <div class="" id="weatherName"></div>
-                <div class="" id="weatherIcon"></div>
-                <div class="" id="weatherDate"></div>
-            </div>
-            <div class="">
-                <div class="r-flex" id="weatherTemp"></div>
-                <div class="r-flex" id="weatherHum"></div>
-            </div>
-            <div class="">
-                <div class="r-flex" id="weatherWind"></div>
-                <div class="r-flex" id="weatherUV"></div>
+            <div id="allContainer" class="r-flex">
+                <div id="resultWrap" class="c-flex">
+                    <div id="weatherName" class="c-flex"></div>
+                    <div id="weatherIcon"></div>
+                    <div id="weatherDate"></div>
+                    <div class="r-flex" id="weatherTemp"></div>
+                    <div class="r-flex" id="weatherHum"></div>
+                    <div class="r-flex" id="weatherWind"></div>
+                    <div class="r-flex" id="weatherUV"></div>
+                </div>
+                <div class="c-flex" id="forecastWrapper">
+                    <!--forecast divs show up here-->
+                </div>
             </div>
         </div>
 
-        <div class="r-flex c" id="forecastWrapper">
-            <!--forecast divs show up here-->
-        </div>
+        
         
 
     </div>

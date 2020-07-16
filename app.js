@@ -1,21 +1,57 @@
-/* db */
-/* raw weather object from api */
+/*
 
-/* letiables */
-/* parsed weather object */
 
-/* utility functions */
-/* get raw data */
-/* parse raw data */
-/* render parsed data */
 
-/* event functions */
-/* search button click */
-/* have city name  */
-/* send city name to a openweather api */
-/* set the weather info to the object returned (see raw data) */
 
-// let storedHistory = JSON.parse(localStorage.getItem("glasgow")).countryInput || {};
+
+
+
+
+
+
+
+
+
+you need to fix the way the storage is poulled on refresh
+it only goes by city, so if you save two citries with the same
+name the app wont be able to get all the info becasue the key is overwrritten.
+change keys to something more specific for each store, possibly using the state code
+or the couintry code and only city code for the most broad search
+
+FUCK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
 
 
 
@@ -109,7 +145,9 @@ function callAPI() {
     let cityInput = $("#cityInput").val().trim();
     let countryInput = $("#countries").val();
     let stateInput = $("#states").val();
-    var units = $("input[name='unitRdo']:checked").val();
+    let units = $("input[name='unitRdo']:checked").val();
+    let tempUnit = "";
+    let windUnit = "";
     let weatherURL = "";
 
     // URLs needed to query the database
@@ -154,6 +192,26 @@ function callAPI() {
         localStorage.setItem(key, JSON.stringify(value));
     }
 
+    if (units === "kelvin") {
+        tempUnit = "°K"
+    }
+    if (units === "metric") {
+        tempUnit = "°C"
+    }
+    else {
+        tempUnit = "°F"
+    }
+
+
+    if (units === "imperial") {
+        windUnit = "mph";
+    }
+    if (units === "metric") {
+        windUnit = "kmh";
+    }
+    else {
+        windUnit = "mph";
+    }
 
     $.ajax({
         url: weatherURL,
@@ -163,34 +221,43 @@ function callAPI() {
         //console.log(weatherRes);
 
         let timeStamp = weatherRes.dt;
-        let newDate = moment.unix(timeStamp).format("L");
+        let newDate = moment.unix(timeStamp).format("dddd, MMMM Do");
         let iCode = weatherRes.weather[0].icon;
         let iURL = "http://openweathermap.org/img/wn/" + iCode + "@2x.png";
         changeFavicon(`${iURL}`);
 
         //console.log(newDate);
 
-        $("#weatherName").text(`${weatherRes.name}`);
+        $("#weatherName").html(
+            `
+                <div class="sub"> Today's weather in</div>
+                <div class="sup">${weatherRes.name}<div>
+            `
+        );
         $("#weatherDate").text(`${newDate}`);
         $("#weatherTemp").html(
             `
-                <div class="tempText">The current temperature is</div>
-                <div class="tempNum">${weatherRes.main.temp.toFixed() + "°"}</div>
+                <div class="sub">The current temperature is\xA0</div>
+                <div class="sup">${weatherRes.main.temp.toFixed()}${tempUnit}</div>
+                
             `
         );
         $("#weatherHum").html(
             `
-                <div class="humText">The current humidity is</div>
-                <div class="humNum">${weatherRes.main.humidity.toFixed() + "%"}</div>
+                <div class="sub">The current humidity is\xA0</div>
+                <div class="sup">${weatherRes.main.humidity.toFixed() + "%"}</div>
             `
         );
         $("#weatherWind").html(
             `
-                <div class="">Wind gusts could reach</div>
-                <div class="">${weatherRes.wind.speed.toFixed() + " mph"} </div>
+                <div class="sub">Wind gusts could reach\xA0</div>
+                <div class="sup">${weatherRes.wind.speed.toFixed()} ${windUnit}</div>
             `
         );
-        $("#weatherIcon").html(`<img class="" src="${iURL}"/>`);
+        $("#weatherIcon").html(`<img class="icon" src="${iURL}"/>`);
+        $("#resultWrap").attr("style", "padding:2vw;");
+        $("#detailWrap").attr("style", "padding:2vw;");
+
 
         let uvLat = weatherRes.coord.lat;
         let uvLon = weatherRes.coord.lon;
@@ -206,14 +273,15 @@ function callAPI() {
             //console.log(uvRes);
             $("#weatherUV").html(
                 `
-                    <div class="r-flex">The current
-                        <a class="" href"https://www.aimatmelanoma.org/prevention/uv-index/"> UV Index</a> is
+                    <div class="r-flex sub">The current\xA0
+                        <a id="uvLink" target="_blank" href="https://www.aimatmelanoma.org/prevention/uv-index/"> UV Index </a>\xA0is\xA0
                     </div>
-                    <div class="">${uvRes.value}</div>
+                    <div class="sup">${uvRes.value}</div>
                 `
             );
         });
     });
+
 
     // synchronous request for forecast data
 
@@ -231,6 +299,27 @@ function callAPI() {
     }
     else {
         forecastURL = globalF;
+    }
+
+    if (units === "kelvin") {
+        tempUnit = "°K"
+    }
+    if (units === "metric") {
+        tempUnit = "°C"
+    }
+    else {
+        tempUnit = "°F"
+    }
+
+
+    if (units === "imperial") {
+        windUnit = "mph";
+    }
+    if (units === "metric") {
+        windUnit = "kmh";
+    }
+    else {
+        windUnit = "mph";
     }
 
     $.ajax({
@@ -251,7 +340,7 @@ function callAPI() {
                 let lK = list[index].main.temp_min;
                 let hK = list[index].main.temp_max;
                 let dt = list[index].dt;
-                let date = moment.unix(dt).format("L");
+                let date = moment.unix(dt).format("ddd, MMM Do");
                 //   console.log(date);
 
                 let iconGet = list[index].weather[0].icon;
@@ -268,15 +357,17 @@ function callAPI() {
 
                 newDiv.html(
                     `
-                        <div class="">${date}</div>
-                        <div class="">${temp}°</div>
-                        <img src="${icon}">
-                        <div>Humidity: ${hum}%</div>
-                        <div>Low: ${low}°</div>
-                        <div>High: ${high}°</div>
+                        <div class="r-flex">
+                            <div class="">${date}</div>
+                            <div class="">${temp}°</div>
+                            <img src="${icon}">
+                            <div>Humidity: ${hum}%</div>
+                            <div>Low: ${low}°</div>
+                            <div>High: ${high}°</div>
+                        <div>
                     `
                 );
-                newDiv.attr("class", "foreCard c-flex");
+                newDiv.attr("class", "foreCard");
 
                 $("#forecastWrapper").append(newDiv);
             } else {
