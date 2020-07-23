@@ -62,9 +62,9 @@ $(document).ready(function () {
         i = keys.length;
 
     while (i--) {
-        
+
         archive[keys[i]] = JSON.parse(localStorage.getItem(keys[i]));
-        
+
         $("#history").append(
             `
             <div class="r-flex hisBtnWrap">
@@ -313,48 +313,85 @@ function callAPI() {
         //possibly turn this into a table of newDivs as rows with column headers
 
         let list = forecastRes.list;
-            console.log(list);
+        console.log(list);
+
+        let fDay1 = moment(moment().add(1, 'days')).format("L");
+        let fDay1Temps = [];
+        let fDay1Highs = [];
+        let fDay1Lows = [];
+        let fDay1Hums = [];
+        let fDay1Icons = [];
+
+        let fDay2 = moment(moment().add(2, 'days')).format("L");
+        let fDay2Temps = [];
+        let fDay2Highs = [];
+        let fDay2Lows = [];
+        let fDay2Hums = [];
+        let fDay2Icons = [];
+
+        let fDay3 = moment(moment().add(3, 'days')).format("L");
+        let fDay4 = moment(moment().add(4, 'days')).format("L");
+        let fDay5 = moment(moment().add(5, 'days')).format("L");
+
 
 
         for (i = 0; i < list.length; i++) {
-            // //console.log(index);
             
 
-            //     /* create card  and append to html */
-            //     let K = list[index].main.temp;
-            //     let lK = list[index].main.temp_min;
-            //     let hK = list[index].main.temp_max;
-            //     let dt = list[index].dt;
-            //     let date = moment.unix(dt).format("ddd, MMM Do");
+            let txtDate = moment.unix(list[i].dt).format("ddd, MMM Do");
+            let date = moment.unix(list[i].dt).format("L");
 
-            //     let iconGet = list[index].weather[0].icon;
-            //     // get all the codes and push into array. sort array for which code appears most,
-            //     // then use it.
+            //txtDate is for diaply, date is for avergaing all data on one day
+            //run a match on these data points and average what you get. 
+            if (date === fDay1) {
 
-            //     let icon = "http://openweathermap.org/img/wn/" + iconGet + "@2x.png";
-            //     let temp = ((K - 273.15) * 1.8 + 32).toFixed();
-            //     let hum = list[index].main.humidity.toFixed();
-            //     let low = ((lK - 273.15) * 1.8 + 32).toFixed();
-            //     let high = ((hK - 273.15) * 1.8 + 32).toFixed();
+                let temps = list[i].main.temp;
+                fDay1Temps.push(temps);
+                //console.log(fDay1Temps);
+                let temp = Math.max.apply(Math, fDay1Temps)
+                //console.log(temp.toFixed());
 
-                let txtDate = moment.unix(list[i].dt).format("ddd, MMM Do");
-                let date = moment.unix(list[i].dt).format("L");
-                //txtDate is for diaply, date is for avergaing all data on one day
-                //run a match on these data points and average what you get. 
 
-                let temp = list[i].main.temp.toFixed();
-                // average of all temps in this main array
-                let low = list[i].main.temp_min.toFixed(); //take these at face value
-                let high = list[i].main.temp_max.toFixed();
-                
-                let iconGet = list[i].weather[0].icon;
-                // use a an array to store all the codes, find the most frequent one
-                // and set it to iconGet
+                let highs = list[i].main.temp_max;
+                fDay1Highs.push(highs);
+                //console.log(fDay1Highs);
+                let high = Math.max.apply(Math, fDay1Highs)
+                //console.log(high.toFixed());
+
+                let lows = list[i].main.temp_min;
+                fDay1Lows.push(lows);
+                //console.log(fDay1Lows);
+                let low = Math.min.apply(Math, fDay1Lows)
+                //console.log(low.toFixed());
+
+                let hums = list[i].main.humidity;
+                fDay1Hums.push(hums);
+                //console.log(fDay1Hums);
+                let hum = Math.max.apply(Math, fDay1Hums)
+                //console.log(hum.toFixed());
+
+
+                let icons = list[i].weather[0].icon;
+                fDay1Icons.push(icons);
+                console.log(fDay1Icons);
+
+                let modeMap = {};
+                let maxIc = fDay1Icons[0], maxCount = 1;
+                for (let i = 0; i < fDay1Icons.length; i++) {
+                    let ic = fDay1Icons[i];
+                    if (modeMap[ic] == null)
+                        modeMap[ic] = 1;
+                    else
+                        modeMap[ic]++;
+                    if (modeMap[ic] > maxCount) {
+                        maxIc = ic;
+                        maxCount = modeMap[ic];
+                    }
+                }
+
+                let iconGet = maxIc;
+                console.log(iconGet)
                 let icon = "http://openweathermap.org/img/wn/" + iconGet + "@2x.png";
-
-                let hum = list[i].main.humidity.toFixed();
-                // check to see if this needs to be an average
-
 
                 newDiv = $("<div>");
 
@@ -364,14 +401,14 @@ function callAPI() {
                             <div class="cardLeft c-flex">
                                 <div class="">${txtDate}</div>
                                 <div class="r-flex">
-                                    <div class="">${temp}°</div>
+                                    <div class="">${temp.toFixed()}°</div>
                                     <img class="icon" src="${icon}">
                                 </div>
                             </div>
                             <div class="cardRight c-flex">
-                                <div>Humidity: ${hum}%</div>
-                                <div>Low: ${low}°</div>
-                                <div>High: ${high}°</div>
+                                <div>Humidity: ${hum.toFixed()}%</div>
+                                <div>Low: ${low.toFixed()}°</div>
+                                <div>High: ${high.toFixed()}°</div>
                             </div>
                         <div>
                     `
@@ -380,15 +417,135 @@ function callAPI() {
                 //tweak this card as you see fit
 
                 $("#forecastWrapper").append(newDiv);
-            
-                // go through heach item
-                //grab temp, humidity, low, high, and icon
-                //average the temps, lowest low, highest high
-            
+
+            }
+            if (date === fDay2) {
+
+                // let temps = list[i].main.temp;
+                // fDay2Temps.push(temps);
+                // //console.log(fDay2Temps);
+                // let temp = Math.max.apply(Math, fDay2Temps)
+                // //console.log(temp.toFixed());
+
+
+                // let highs = list[i].main.temp_max;
+                // fDay2Highs.push(highs);
+                // //console.log(fDay2Highs);
+                // let high = Math.max.apply(Math, fDay2Highs)
+                // //console.log(high.toFixed());
+
+                // let lows = list[i].main.temp_min;
+                // fDay2Lows.push(lows);
+                // //console.log(fDay2Lows);
+                // let low = Math.min.apply(Math, fDay2Lows)
+                // //console.log(low.toFixed());
+
+                // let hums = list[i].main.humidity;
+                // fDay2Hums.push(hums);
+                // //console.log(fDay2Hums);
+                // let hum = Math.max.apply(Math, fDay2Hums)
+                // //console.log(hum.toFixed());
+
+
+                // let icons = list[i].weather[0].icon;
+                // fDay2Icons.push(icons);
+                // console.log(fDay2Icons);
+
+                // let modeMap = {};
+                // let maxIc = fDay2Icons[0], maxCount = 1;
+                // for (let i = 0; i < fDay2Icons.length; i++) {
+                //     let ic = fDay2Icons[i];
+                //     if (modeMap[ic] == null)
+                //         modeMap[ic] = 1;
+                //     else
+                //         modeMap[ic]++;
+                //     if (modeMap[ic] > maxCount) {
+                //         maxIc = ic;
+                //         maxCount = modeMap[ic];
+                //     }
+                // }
+
+                // let iconGet = maxIc;
+                // console.log(iconGet)
+                // let icon = "http://openweathermap.org/img/wn/" + iconGet + "@2x.png";
+
+                
+            }
+            if (date === fDay3) {
+                console.log('match 3')
+            }
+            if (date === fDay4) {
+                console.log('match 4')
+            }
+            if (date === fDay5) {
+                console.log('match 5')
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // let temp = list[i].main.temp.toFixed();
+            // // average of all temps in this main array
+            // let low = list[i].main.temp_min.toFixed(); //take these at face value
+            // let high = list[i].main.temp_max.toFixed();
+
+            // let iconGet = list[i].weather[0].icon;
+            // // use a an array to store all the codes, find the most frequent one
+            // // and set it to iconGet
+            // let icon = "http://openweathermap.org/img/wn/" + iconGet + "@2x.png";
+
+            // let hum = list[i].main.humidity.toFixed();
+            // // check to see if this needs to be an average
+
+
+            // newDiv = $("<div>");
+
+            // newDiv.html(
+            //     `
+            //             <div r-flex">
+            //                 <div class="cardLeft c-flex">
+            //                     <div class="">${txtDate}</div>
+            //                     <div class="r-flex">
+            //                         <div class="">${temp}°</div>
+            //                         <img class="icon" src="${icon}">
+            //                     </div>
+            //                 </div>
+            //                 <div class="cardRight c-flex">
+            //                     <div>Humidity: ${hum}%</div>
+            //                     <div>Low: ${low}°</div>
+            //                     <div>High: ${high}°</div>
+            //                 </div>
+            //             <div>
+            //         `
+            // );
+            // newDiv.attr("class", "foreCard");
+            // //tweak this card as you see fit
+
+            // $("#forecastWrapper").append(newDiv);
+
+            // // go through heach item
+            // //grab temp, humidity, low, high, and icon
+            // //average the temps, lowest low, highest high
+
         };
     });
 
-    
+
     // resets default values for next search
     $("#cityInput").val('');
     $('#countries').prop('selectedIndex', 0);
