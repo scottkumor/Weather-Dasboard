@@ -31,9 +31,20 @@ $(document).ready(function () {
 function callWeatherAPI() {
 
     $("#greeting").attr("style", "display:none;");
+    $("#forecastToggle").attr("style", "display:block;");
 
-    // This is my API key
+
+///////////////
+
+
+    // This is my API key PROCESS ENV THIS
     let APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
+    //READ ABOVE PROCESS ENV
+
+///////////////
+
+
+
     let cityInput = $("#cityInput").val().trim();
     let countryInput = $("#countries").val();
     let stateInput = $("#states").val();

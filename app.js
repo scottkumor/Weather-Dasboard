@@ -18,6 +18,8 @@ turn forecast into a opt-in, toggle a button to go back to just today's weather
 
 $(document).ready(function () {
     
+    $("#forecastToggle").attr("style", "display:none;");
+
 
     var archive = {}, // Notice change here
         keys = Object.keys(localStorage),
