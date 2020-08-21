@@ -223,6 +223,13 @@ input[type=radio]:not(old):checked + label {
     grid-area: b;
 }
 
+.border {
+    border: 0px;
+    border-bottom: 1px solid;
+    border-image: linear-gradient(to right, white 0%, rgb(107,152,255) 50%, white 100%);
+    border-image-slice: 1;
+}
+
 #greeting {
     color: rgba(0,27,90,1);
     padding: 5vw;
@@ -240,15 +247,14 @@ input[type=radio]:not(old):checked + label {
 }
 
 #allContainer { 
-    align-items: center;
     justify-content: space-around;
 }
 
 #resultWrap {
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color:white;
-    font-size: 3vw;
+    font-size: 2.5vw;
     box-shadow: 5px 5px 10px rgba(107,152,255,.3);
     -webkit-box-shadow: 5px 5px 14px rgba(107,152,255,.3);
     -moz-box-shadow: 5px 5px 10px rgba(107,152,255,.3);
@@ -265,12 +271,12 @@ input[type=radio]:not(old):checked + label {
 }
 
 .sub {
-    font-size: 1vw;
+    font-size: 2vw;
     
 }
 
 .sup {
-    font-size: 3vw;
+    font-size: 5vw;
     background: -webkit-linear-gradient(rgb(35, 47, 76), rgb(0, 59,196) 100%);
     background-clip: text;
     -webkit-background-clip: text;
@@ -300,11 +306,16 @@ input[type=radio]:not(old):checked + label {
     width:100%;
 }
 
+#forecastLabel {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
 #forecastWrapper {
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color:white;
-    font-size: 1vw;
+    font-size: 1vw;padding: 2vw;
     box-shadow: 5px 5px 10px rgba(107,152,255,.3);
     -webkit-box-shadow: 5px 5px 14px rgba(107,152,255,.3);
     -moz-box-shadow: 5px 5px 10px rgba(107,152,255,.3);
@@ -312,30 +323,23 @@ input[type=radio]:not(old):checked + label {
 
 .foreCard {
     font-size: 2vw;
+    margin: .5vw;
+    padding: 1vw;
     justify-content: center;
     align-items: center;
     
 }
 
-.cardLeft {
-    justify-content: center;
+.cardUpper {
+    justify-content: space-between;
     align-items: center;
 }
 
-.cardRight {
-    font-size: 1vw;
-    justify-content: center;
+.cardLower, .cardLowerLeft, .cardLowerRight{
+    font-size: 1.5vw;
+    justify-content: space-around;
     align-items: center;
 }
-
-
-
-
-
-
-
-
-
 
 .r-flex{
     display: flex;

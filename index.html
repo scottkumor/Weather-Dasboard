@@ -10,8 +10,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./app.js"></script>
-    <script src="./weather.js"></script>
-    <script src="./forecast.js"></script>
     <link rel="icon" type="image/png" href="http://openweathermap.org/img/wn/01d@2x.png" />
     <title>Weather Dashboard</title>
 </head>
@@ -46,10 +44,6 @@
                     <div class="r-flex">
                         <input id="metric" value="metric" type="radio" name="unitRdo"/>
                         <label for="metric">Metric (C°)</label>
-                    </div>
-                    <div class="r-flex">
-                        <input id="kelvin" value="kelvin" type="radio" name="unitRdo"/>
-                        <label for="kelvin">Kelvin (K°)</label>
                     </div>
                 </div>
                 <select id="countries" name="countries">
@@ -362,10 +356,9 @@
                     <button id="wipe"><i class="fa fa-trash"></i></button>
                 </div>
                 <div class="cr-flex" id="history">
-                    <!-- dynamically create buttons here-->
+                    <!-- dynamically appends buttons here-->
                 </div>
-            </div>
-            
+            </div>        
         </div>
 
         <div class="b" id="weatherWrapper">
@@ -383,21 +376,19 @@
                 <div id="resultWrap" class="c-flex">
                     <div id="weatherName" class="c-flex"></div>
                     <div id="weatherIcon"></div>
+                    <div id="weatherDesc"></div>
                     <div id="weatherDate"></div>
                     <div class="r-flex" id="weatherTemp"></div>
                     <div class="r-flex" id="weatherHum"></div>
                     <div class="r-flex" id="weatherWind"></div>
                     <div class="r-flex" id="weatherUV"></div>
-                    <button id="forecastToggle" class="">See Forecast</button>
                 </div>
-                <div class="c-flex" id="forecastWrapper">
-                    
+                
+                <div  id="forecastWrapper" class="c-flex">
+                    <!-- dynamically appends cards here-->
                 </div>
             </div>
         </div>
-
-        
-        
 
     </div>
 </body>
