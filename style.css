@@ -211,7 +211,7 @@ input[type=radio]:not(old):checked + label {
     padding-left: 1vw;
     text-transform: capitalize;
     background-color: transparent;
-    font-size: 3vh;
+    font-size: 3vw;
     overflow: hidden;
     text-overflow: ellipsis;
     
@@ -228,6 +228,7 @@ input[type=radio]:not(old):checked + label {
     border-bottom: 1px solid;
     border-image: linear-gradient(to right, white 0%, rgb(107,152,255) 50%, white 100%);
     border-image-slice: 1;
+    margin: .5vw;
 }
 
 #greeting {
@@ -244,6 +245,7 @@ input[type=radio]:not(old):checked + label {
     box-shadow: 5px 5px 10px rgba(107,152,255,.3);
     -webkit-box-shadow: 5px 5px 14px rgba(107,152,255,.3);
     -moz-box-shadow: 5px 5px 10px rgba(107,152,255,.3);
+    margin: .25vw;
 }
 
 #allContainer { 

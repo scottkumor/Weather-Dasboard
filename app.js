@@ -12,45 +12,105 @@ or the couintry code and only city code for the most broad search
 
 
 $(document).ready(function () {
-    
+
     $("#forecastWrapper").attr("style", "display:none;");
 
-
-    var archive = {}, // Notice change here
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    var archive = [], // Notice change here
         keys = Object.keys(localStorage),
         i = keys.length;
+
+    console.log(keys)
 
     while (i--) {
 
         archive[keys[i]] = JSON.parse(localStorage.getItem(keys[i]));
+        console.log(archive[keys[i]])
 
-        $("#history").append(
-            `
+
+
+        if (archive[keys[i]].stateInput && archive[keys[i]].countryInput === "us") {
+            $("#history").append(
+                `
+                <div class="r-flex hisBtnWrap">
+                    <button class="hisBtn data-key="${archive[keys[i]]}"">
+                        ${archive[keys[i]].cityInput}, ${archive[keys[i]].stateInput}, ${archive[keys[i]].countryInput}
+                    </button>
+                    <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
+                </div>
+                `
+            );
+            console.log('hit state');
+            console.log(archive[keys[i]])
+        }
+
+        else if (archive[keys[i]].countryInput && archive[keys[i]].countryInput !== "us") {
+            $("#history").append(
+                `
+                <div class="r-flex hisBtnWrap">
+                    <button class="hisBtn" data-key="${archive[keys[i]]}">
+                        ${archive[keys[i]].cityInput}, ${archive[keys[i]].countryInput}
+                    </button>
+                    <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
+                </div>
+                `
+            );
+            console.log('hit country')
+            console.log(archive[keys[i]])
+
+        }
+
+        else {
+            $("#history").append(
+                `
             <div class="r-flex hisBtnWrap">
-                <button class="hisBtn">
+                <button class="hisBtn data-city="${archive[keys[i]].cityInput}"">
                     ${archive[keys[i]].cityInput}
                 </button>
-                <i data-key="${archive[keys[i]].cityInput}" class="fa fa-times clear"></i>
+                <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
             </div>
             `
-        );
+            );
+            console.log('hit global')
+
+        }
     }
 
-    
+
+
+
+
+
+    $("#history").on("click", ".hisBtn", function (event) {
+
+        let key = $(this);
+        let item = JSON.parse(localStorage.getItem(key)) || '';
+        console.log(key)
+        console.log(item)
+
+
+        
+
+        //$("#citySubmit").click();
+        // callWeatherAPI();
+        // callForecastAPI();
+
+    });
+
+    // $("#history").on("click", ".clear", function (event) {
+    //     event.stopPropagation();
+    //     let text = $(this).data("key");
+    //     localStorage.removeItem(text);
+    //     $(this).parent().remove();
+    // });
 
     $("#wipe").on("click", function () {
         localStorage.clear();
         $("#history").empty();
     });
 
-    
+    /////////////////////////////////////////////////////////
 
-    $("#history").on("click", ".clear", function (event) {
-        event.stopPropagation();
-        let text = $(this).data("key");
-        localStorage.removeItem(text);
-        $(this).parent().remove();
-    });
 
     $('#countries').change(function () {
         var opt = $(this).find('option:selected').val();
@@ -79,24 +139,7 @@ $(document).ready(function () {
         $("#forecastWrapper").empty();
     });
 
-    $("#history").on("click", ".hisBtnWrap", function (evnt) {
 
-        let text = $(this).text().trim();
-        console.log(text)
-        let item = JSON.parse(localStorage.getItem(text)) || '';
-
-        $("#cityInput").val(text)
-        $("#countries").val(item.countryInput || '');
-        $("#states").val(item.stateInput || '');
-
-        localStorage.removeItem(text);
-        $(this).remove();
-
-        $("#citySubmit").click();
-        // callWeatherAPI();
-        // callForecastAPI();
-
-    });
 
 });
 
@@ -135,12 +178,12 @@ function callWeatherAPI() {
     let country = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${countryInput}&units=${units}&appid=${APIKey}`;
     let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},us&units=${units}&appid=${APIKey}`;
 
-    
+
 
     if (stateInput !== "") {
         weatherURL = usStates;
 
-        let key = cityInput;
+        let key = [{ cityInput }, { countryInput }, { stateInput }];
         let value = { cityInput, countryInput, stateInput }
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -159,7 +202,7 @@ function callWeatherAPI() {
     if (countryInput !== "" && countryInput !== "us") {
         weatherURL = country;
 
-        let key = cityInput;
+        let key = [{ cityInput }, { countryInput }];
         let value = { cityInput, countryInput }
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -175,10 +218,10 @@ function callWeatherAPI() {
             `
         );
     }
-    else if (countryInput !== "us") {
+    else if (countryInput !== "us" && stateInput === "") {
         weatherURL = global;
 
-        let key = cityInput
+        let key = cityInput;
         let value = { cityInput };
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -195,7 +238,7 @@ function callWeatherAPI() {
         );
     }
 
-   
+
     if (units === "metric") {
         tempUnit = "°C"
     }
@@ -215,7 +258,7 @@ function callWeatherAPI() {
         method: "GET",
     }).then(function (weatherRes) {
         // Log the resulting object
-        console.log(weatherRes);
+        //console.log(weatherRes);
 
         let timeStamp = weatherRes.dt;
         let newDate = moment.unix(timeStamp).format("dddd, MMMM Do");
@@ -286,11 +329,9 @@ function callWeatherAPI() {
             );
         });
     });
-
-    
 };
 
- function callForecastAPI() {
+function callForecastAPI() {
 
     // This is my API key PROCESS ENV THIS
     let APIKey = "1bc8de1510a7bc2ef6cbcd528035eef8";
@@ -315,15 +356,15 @@ function callWeatherAPI() {
     let usStates = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput},${stateInput},us&units=${units}&appid=${APIKey}`;
 
     // api.openweathermap.org/data/2.5/forecast?q={city name}&appid={your api key}
-    if (stateInput !== "") {forecastURL = usStates;}
-    if (countryInput !== "" && countryInput !== "us") {forecastURL = country;}
-    else if (countryInput !== "us") {forecastURL = global;}
+    if (stateInput !== "") { forecastURL = usStates; }
+    if (countryInput !== "" && countryInput !== "us") { forecastURL = country; }
+    else if (countryInput !== "us") { forecastURL = global; }
 
-    if (units === "metric") {tempUnit = "°C"}
-    else {tempUnit = "°F"}
+    if (units === "metric") { tempUnit = "°C"; }
+    else { tempUnit = "°F"; }
 
-    if (units === "metric") {windUnit = "kmh";}
-    else {windUnit = "mph";}
+    if (units === "metric") { windUnit = "kmh"; }
+    else { windUnit = "mph"; }
 
     $.ajax({
         url: forecastURL,
@@ -415,8 +456,8 @@ function callWeatherAPI() {
         for (i = 0; i < list.length; i++) {
 
             let date = moment.unix(list[i].dt).format('L');
-            
-            if (date === today) {continue;};
+
+            if (date === today) { continue; };
 
             if (date === day1) {
                 let highGet1 = list[i].main.temp_max;
@@ -620,15 +661,15 @@ function callWeatherAPI() {
         hum5 = Math.max.apply(Math, humArray5).toFixed();
         wind5 = Math.min.apply(Math, windArray5).toFixed();
         //windDeg5 = Math.max.apply(Math, windDegArray5).toFixed();
-    
-    
+
+
         newDiv1 = $("<div>");
 
         newDiv1.html(
             `
             <div class="c-flex">
                 <div class="cardUpper r-flex">
-                    <div class="">${cardDay1}</div>
+                    <div class="border">${cardDay1}</div>
                     <img class="icon" src="${icon1}">
                 </div>
                 <div class="cardLower r-flex">
@@ -654,7 +695,7 @@ function callWeatherAPI() {
             `
             <div class="c-flex">
                 <div class="cardUpper r-flex">
-                    <div class="">${cardDay2}</div>
+                    <div class="border">${cardDay2}</div>
                     <img class="icon" src="${icon2}">
                 </div>
                 <div class="cardLower r-flex">
@@ -680,7 +721,7 @@ function callWeatherAPI() {
             `
                 <div class="c-flex">
                     <div class="cardUpper r-flex">
-                        <div class="">${cardDay3}</div>
+                        <div class="border">${cardDay3}</div>
                         <img class="icon" src="${icon3}">
                     </div>
                     <div class="cardLower r-flex">
@@ -705,7 +746,7 @@ function callWeatherAPI() {
             `
             <div class="c-flex">
                 <div class="cardUpper r-flex">
-                    <div class="">${cardDay4}</div>
+                    <div class="border">${cardDay4}</div>
                     <img class="icon" src="${icon4}">
                 </div>
                 <div class="cardLower r-flex">
@@ -730,7 +771,7 @@ function callWeatherAPI() {
             `
                 <div class="c-flex">
                     <div class="cardUpper r-flex">
-                        <div class="">${cardDay5}</div>
+                        <div class="border">${cardDay5}</div>
                         <img class="icon" src="${icon5}">
                     </div>
                     <div class="cardLower r-flex">
@@ -750,18 +791,18 @@ function callWeatherAPI() {
         newDiv5.attr("class", "foreCard border");
 
         label = $("<div>");
-        label.html( '<div>Your 5-Day Forecast</div>');
+        label.html('<div>Your 5-Day Forecast</div>');
         label.attr("id", "forecastLabel");
         label.attr("class", "forecastLabel sub border");
 
 
 
         $("#forecastWrapper").append(label, newDiv1, newDiv2, newDiv3, newDiv4, newDiv5);
-    
-    
+
+
     });
 
-    
+
 
     // resets default values for next search
     $("#cityInput").val('');
