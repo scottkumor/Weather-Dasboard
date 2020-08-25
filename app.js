@@ -1,31 +1,17 @@
-/*
-
-
-you need to fix the way the storage is poulled on refresh
-it only goes by city, so if you save two citries with the same
-name the app wont be able to get all the info becasue the key is overwrritten.
-change keys to something more specific for each store, possibly using the state code
-or the couintry code and only city code for the most broad search
-
-
-*/
-
 
 $(document).ready(function () {
 
     $("#forecastWrapper").attr("style", "display:none;");
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    var archive = [], // Notice change here
+    
+    let archive = [], 
         keys = Object.keys(localStorage),
         i = keys.length;
 
-    console.log(keys)
 
     while (i--) {
 
         archive[keys[i]] = JSON.parse(localStorage.getItem(keys[i]));
-        console.log(archive[keys[i]]);
 
         if (archive[keys[i]].stateInput && archive[keys[i]].countryInput === "us") {
             $("#history").append(
@@ -37,9 +23,7 @@ $(document).ready(function () {
                     <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
                 </div>
                 `
-            );
-            console.log('hit state');
-            console.log(archive[keys[i]]);
+            );   
         }
 
         else if (archive[keys[i]].countryInput && archive[keys[i]].countryInput !== "us") {
@@ -53,9 +37,6 @@ $(document).ready(function () {
                 </div>
                 `
             );
-            console.log('hit country')
-            console.log(archive[keys[i]])
-
         }
 
         else {
@@ -69,61 +50,96 @@ $(document).ready(function () {
                 </div>
                 `
             );
-            console.log('hit global')
-
         }
+
     };
 
 
     $("#history").on("click", ".hisBtn", function (event) {
 
-        
-
         if ($(this).data("state")) {
 
-            function Item(city, state, country) {
-                this.cityInput = city;
-                this.stateInput = state;
-                this.countryInput = country;
-            };
-
-            console.log("clicked");
-            let city = $(this).data("city");
-            let state = $(this).data("state");
-            let country = $(this).data("country");
-            console.log(city);
-            console.log(state);
-            console.log(country);
+            let cityGet = $(this).data("city");
+            let stateGet = $(this).data("state");
+            let countryGet = $(this).data("country");
             
-            let get = new Item (city, state, country);
-            //`{"cityInput":"${city}", "countryInput":"${country}", "stateInput":"${state}"}`
-            console.log(get);
+            $(this).parent().remove();
 
-            let item = JSON.parse(localStorage.getItem(get));
-            console.log(item);
+            $("#cityInput").val(cityGet);
+            $("#states").val(stateGet);
+            $("#countries").val(countryGet);
+
+            $("#citySubmit").click();
+        }
+
+        else if ($(this).data("country")) {
+
+            let cityGet = $(this).data("city");
+            let countryGet = $(this).data("country");
+            
+            $(this).parent().remove();
+
+            $("#cityInput").val(cityGet);
+            $("#countries").val(countryGet);
+
+            $("#citySubmit").click();
+        }
+
+        else {
+
+            let cityGet = $(this).data("city");
+            
+            $(this).parent().remove();
+
+            $("#cityInput").val(cityGet);
+
+            $("#citySubmit").click();
 
         };
-        
-
-        //$("#citySubmit").click();
-        // callWeatherAPI();
-        // callForecastAPI();
 
     });
 
-    // $("#history").on("click", ".clear", function (event) {
-    //     event.stopPropagation();
-    //     let text = $(this).data("key");
-    //     localStorage.removeItem(text);
-    //     $(this).parent().remove();
-    // });
+    $("#history").on("click", ".clear", function (event) {
+        
+        if ($(this).data("state")) {
+
+            let cityGet = $(this).data("city");
+            let stateGet = $(this).data("state");
+            let countryGet = $(this).data("country");
+            
+            $(this).parent().remove();
+
+            localStorage.removeItem(`${cityGet},${stateGet},${countryGet}`);
+
+        }
+
+        else if ($(this).data("country")) {
+
+            let cityGet = $(this).data("city");
+            let countryGet = $(this).data("country");
+            
+            $(this).parent().remove();
+
+            localStorage.removeItem(`${cityGet},${countryGet}`);
+
+        }
+
+        else {
+
+            let cityGet = $(this).data("city");
+
+            $(this).parent().remove();
+
+            localStorage.removeItem(`${cityGet}`);
+
+        };
+    });
 
     $("#wipe").on("click", function () {
         localStorage.clear();
         $("#history").empty();
     });
 
-    /////////////////////////////////////////////////////////
 
 
     $('#countries').change(function () {
@@ -152,9 +168,7 @@ $(document).ready(function () {
 
         $("#forecastWrapper").empty();
     });
-
-
-
+    
 });
 
 
@@ -190,14 +204,14 @@ function callWeatherAPI() {
     // URLs needed to query the database
     let global = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=${units}&appid=${APIKey}`;
     let country = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${countryInput}&units=${units}&appid=${APIKey}`;
-    let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},us&units=${units}&appid=${APIKey}`;
+    let usStates = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput},${stateInput},${countryInput}&units=${units}&appid=${APIKey}`;
 
 
 
     if (stateInput !== "") {
         weatherURL = usStates;
 
-        let key = [{ cityInput }, { countryInput }, { stateInput }];
+        let key = `${cityInput},${stateInput},${countryInput}`;
         let value = { cityInput, countryInput, stateInput }
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -205,18 +219,18 @@ function callWeatherAPI() {
         $("#history").append(
             `
             <div class="r-flex hisBtnWrap">
-                <button class="hisBtn">
+                <button class="hisBtn" data-city="${cityInput}" data-state="${stateInput}" data-country="${countryInput}">
                     ${cityInput}, ${stateInput}, ${countryInput}
                 </button>
-                <i data-key="${cityInput, stateInput, countryInput}" class="fa fa-times clear"></i>
+                <i data-city="${cityInput}" data-state="${stateInput}" data-country="${countryInput}" class="fa fa-times clear"></i>
             </div>
             `
         );
     }
-    if (countryInput !== "" && countryInput !== "us") {
+    else if (countryInput !== "" && countryInput !== "us") {
         weatherURL = country;
 
-        let key = [{ cityInput }, { countryInput }];
+        let key = `${cityInput},${countryInput}`;
         let value = { cityInput, countryInput }
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -224,18 +238,18 @@ function callWeatherAPI() {
         $("#history").append(
             `
             <div class="r-flex hisBtnWrap">
-                <button class="hisBtn">
+                <button class="hisBtn"  data-city="${cityInput}" data-country="${countryInput}">
                     ${cityInput}, ${countryInput} 
                 </button>
-                <i data-key="${cityInput, countryInput}" class="fa fa-times clear"></i>
+                <i data-city="${cityInput}" data-country="${countryInput}" class="fa fa-times clear"></i>
             </div>
             `
         );
     }
-    else if (countryInput !== "us" && stateInput === "") {
+    else {
         weatherURL = global;
 
-        let key = cityInput;
+        let key = `${cityInput}`;
         let value = { cityInput };
 
         localStorage.setItem(key, JSON.stringify(value));
@@ -243,10 +257,10 @@ function callWeatherAPI() {
         $("#history").append(
             `
             <div class="r-flex hisBtnWrap">
-                <button class="hisBtn">
+                <button class="hisBtn" data-city="${cityInput}">
                     ${cityInput} 
                 </button>
-                <i data-key="${cityInput}" class="fa fa-times clear"></i>
+                <i data-city="${cityInput}" class="fa fa-times clear"></i>
             </div>
             `
         );
@@ -272,7 +286,6 @@ function callWeatherAPI() {
         method: "GET",
     }).then(function (weatherRes) {
         // Log the resulting object
-        //console.log(weatherRes);
 
         let timeStamp = weatherRes.dt;
         let newDate = moment.unix(timeStamp).format("dddd, MMMM Do");
@@ -280,7 +293,6 @@ function callWeatherAPI() {
         let iURL = "http://openweathermap.org/img/wn/" + iCode + "@2x.png";
         changeFavicon(`${iURL}`);
 
-        //console.log(newDate);
 
         $("#weatherName").html(
             `
@@ -332,7 +344,6 @@ function callWeatherAPI() {
             method: "GET",
         }).then(function (uvRes) {
             // Log the resulting object
-            //console.log(uvRes);
             $("#weatherUV").html(
                 `
                     <div class="r-flex sub">The current\xA0
@@ -386,7 +397,6 @@ function callForecastAPI() {
     }).then(function (forecastRes) {
 
         let list = forecastRes.list;
-        //console.log(list)
 
         let today = moment().format('L');
         let day1 = moment(moment().add(1, 'days')).format("L");
