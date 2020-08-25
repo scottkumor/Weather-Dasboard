@@ -25,15 +25,13 @@ $(document).ready(function () {
     while (i--) {
 
         archive[keys[i]] = JSON.parse(localStorage.getItem(keys[i]));
-        console.log(archive[keys[i]])
-
-
+        console.log(archive[keys[i]]);
 
         if (archive[keys[i]].stateInput && archive[keys[i]].countryInput === "us") {
             $("#history").append(
                 `
                 <div class="r-flex hisBtnWrap">
-                    <button class="hisBtn data-key="${archive[keys[i]]}"">
+                    <button class="hisBtn" data-state="${archive[keys[i]].stateInput}" data-city="${archive[keys[i]].cityInput}" data-country="${archive[keys[i]].countryInput}">
                         ${archive[keys[i]].cityInput}, ${archive[keys[i]].stateInput}, ${archive[keys[i]].countryInput}
                     </button>
                     <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
@@ -41,14 +39,14 @@ $(document).ready(function () {
                 `
             );
             console.log('hit state');
-            console.log(archive[keys[i]])
+            console.log(archive[keys[i]]);
         }
 
         else if (archive[keys[i]].countryInput && archive[keys[i]].countryInput !== "us") {
             $("#history").append(
                 `
                 <div class="r-flex hisBtnWrap">
-                    <button class="hisBtn" data-key="${archive[keys[i]]}">
+                    <button class="hisBtn" data-city="${archive[keys[i]].cityInput}" data-country="${archive[keys[i]].countryInput}">
                         ${archive[keys[i]].cityInput}, ${archive[keys[i]].countryInput}
                     </button>
                     <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
@@ -63,32 +61,48 @@ $(document).ready(function () {
         else {
             $("#history").append(
                 `
-            <div class="r-flex hisBtnWrap">
-                <button class="hisBtn data-city="${archive[keys[i]].cityInput}"">
-                    ${archive[keys[i]].cityInput}
-                </button>
-                <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
-            </div>
-            `
+                <div class="r-flex hisBtnWrap">
+                    <button class="hisBtn" data-city="${archive[keys[i]].cityInput}">
+                        ${archive[keys[i]].cityInput}
+                    </button>
+                    <i data-key="${archive[keys[i]]}" class="fa fa-times clear"></i>
+                </div>
+                `
             );
             console.log('hit global')
 
         }
-    }
-
-
-
-
+    };
 
 
     $("#history").on("click", ".hisBtn", function (event) {
 
-        let key = $(this);
-        let item = JSON.parse(localStorage.getItem(key)) || '';
-        console.log(key)
-        console.log(item)
+        
 
+        if ($(this).data("state")) {
 
+            function Item(city, state, country) {
+                this.cityInput = city;
+                this.stateInput = state;
+                this.countryInput = country;
+            };
+
+            console.log("clicked");
+            let city = $(this).data("city");
+            let state = $(this).data("state");
+            let country = $(this).data("country");
+            console.log(city);
+            console.log(state);
+            console.log(country);
+            
+            let get = new Item (city, state, country);
+            //`{"cityInput":"${city}", "countryInput":"${country}", "stateInput":"${state}"}`
+            console.log(get);
+
+            let item = JSON.parse(localStorage.getItem(get));
+            console.log(item);
+
+        };
         
 
         //$("#citySubmit").click();
